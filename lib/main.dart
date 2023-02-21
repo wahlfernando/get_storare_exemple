@@ -4,6 +4,7 @@ import 'package:get_storage_exemple/pages/home/home_page.dart';
 
 void main() async{
   await GetStorage.init;
+  await GetStorage.init('StorageDois');
   runApp(const MyApp());
 }
 

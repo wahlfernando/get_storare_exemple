@@ -12,19 +12,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final storage = GetStorage();
+  final storageDois = GetStorage(
+      'StorageDois'); // => importante passar o mesmo nome da inicialização
   late final VoidCallback listen;
 
   @override
   void initState() {
-      listen = storage.listen(() {
-        //recebe apenas uma notificação do que foi alterado..
-        debugPrint('A Storage foi alterado!');
-      });
+    listen = storage.listen(() {
+      //recebe apenas uma notificação do que foi alterado..
+      debugPrint('A Storage foi alterado!');
+    });
 
-      // temos outra possibildiade de escutarmos as mudanças de cada chave especifica com o listenKey:
-      storage.listenKey('nameKey', (value) {
-        debugPrint('Chave alteradda: $value');
-      });
+    // temos outra possibildiade de escutarmos as mudanças de cada chave especifica com o listenKey:
+    storage.listenKey('nameKey', (value) {
+      debugPrint('Chave alteradda: $value');
+    });
     super.initState();
   }
 
@@ -35,45 +37,72 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     var name = storage.read('nameKey') ?? '';
+    var nameDois = storageDois.read('nameKey') ?? '';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home page'),
+        title: const Text('Home - Exemplos de GetStorage'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text('Olhar nos commits para verificar as técnicas utilizadas'),
+            const SizedBox(
+              height: 50,
+            ),
             Text(name),
             ElevatedButton(
               onPressed: () {
-                storage.write('nameKey', 'Fernando Alexandre Wahl - Dev. Flutter');
-                setState(() {
-
-                });
+                storage.write(
+                    'nameKey', 'Fernando Alexandre Wahl - Dev. Flutter');
+                setState(() {});
               },
               child: const Text('Gravar nome'),
             ),
             ElevatedButton(
               onPressed: () {
                 storage.remove('nameKey');
-                setState(() {
-
-                });
+                setState(() {});
               },
               child: const Text('Excluir nome'),
             ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                color: Theme.of(context).primaryColor,
+                width: MediaQuery.of(context).size.width,
+                height: 2,
+              ),
+            ),
+            Text(nameDois),
             ElevatedButton(
               onPressed: () {
-                // iso ja faz com que a "escuta" das storages para de funcioar.
-                // nao tem um objetivo muito claro, mas é uma possibilidade. 
-                listen();
+                storageDois.write('nameKey', 'Desenvolvimento Flutter');
+                setState(() {});
               },
-              child: const Text('Removendo Listen'),
+              child: const Text('Gravar nome Dois'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                storageDois.remove('nameKey');
+                setState(() {});
+              },
+              child: const Text('Excluir nome Dois'),
+            ),
+
+            // comentado temporariamente para estudar a parte de duplos Containers do Storage
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // iso ja faz com que a "escuta" das storages para de funcioar.
+            //     // nao tem um objetivo muito claro, mas é uma possibilidade.
+            //     listen();
+            //   },
+            //   child: const Text('Removendo Listen'),
+            // ),
           ],
         ),
       ),
