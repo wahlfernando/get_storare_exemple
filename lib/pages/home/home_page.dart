@@ -8,17 +8,31 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
+// os listeners são bem importantes para controlar alguma funcionalidade de escuta da tela ou do app.
 
 class _HomePageState extends State<HomePage> {
   final storage = GetStorage();
+  late final VoidCallback listen;
 
   @override
   void initState() {
-      storage.listen(() {
+      listen = storage.listen(() {
+        //recebe apenas uma notificação do que foi alterado..
         debugPrint('A Storage foi alterado!');
       });
+
+      // temos outra possibildiade de escutarmos as mudanças de cada chave especifica com o listenKey:
+      storage.listenKey('nameKey', (value) {
+        debugPrint('Chave alteradda: $value');
+      });
     super.initState();
+  }
+
+  //devemos sempre descartar um listem quando saimos da tela, para isso devemos usar o dispose:
+  @override
+  void dispose() {
+    listen();
+    super.dispose();
   }
 
 
@@ -51,6 +65,14 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               child: const Text('Excluir nome'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // iso ja faz com que a "escuta" das storages para de funcioar.
+                // nao tem um objetivo muito claro, mas é uma possibilidade. 
+                listen();
+              },
+              child: const Text('Removendo Listen'),
             ),
           ],
         ),
