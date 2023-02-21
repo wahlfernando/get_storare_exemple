@@ -9,10 +9,22 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
+  final storage = GetStorage();
+
+  @override
+  void initState() {
+      storage.listen(() {
+        debugPrint('A Storage foi alterado!');
+      });
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    var name = GetStorage().read('nameKey') ?? '';
+    var name = storage.read('nameKey') ?? '';
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home page'),
@@ -24,7 +36,7 @@ class _HomePageState extends State<HomePage> {
             Text(name),
             ElevatedButton(
               onPressed: () {
-                GetStorage().write('nameKey', 'Fernando Alexandre Wahl - Dev. Flutter');
+                storage.write('nameKey', 'Fernando Alexandre Wahl - Dev. Flutter');
                 setState(() {
 
                 });
@@ -33,7 +45,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                GetStorage().remove('nameKey');
+                storage.remove('nameKey');
                 setState(() {
 
                 });
